@@ -1,12 +1,16 @@
 
 from flask.json import jsonify
 from website.models import Post
-from flask import Blueprint, request
+from flask import Blueprint, request, redirect
 from flask.helpers import flash
 from flask.templating import render_template
 from flask_login import login_required, current_user
+""" from werkzeug.utils import secure_filename """
 from . import db
 import json
+import os
+import easyocr
+
 
 views = Blueprint('views', __name__)
 
@@ -34,21 +38,21 @@ def delete_post():
 @views.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
-    return render_template("profile.html", user=current_user)
+    return render_template("profile.html", user=current_user, num_posts=len(current_user.posts))
 
 
 @views.route('/add', methods=['GET', 'POST'])
 @login_required
 def add():
     if request.method == 'POST':
-        data_img = request.form.get('img')
-        data_type = request.form.get('type')
-        data_data = 'data'
+        file = request.files['file']
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+        file.save(os.path.join(dir_path, 'img', file.filename))
 
         new_post = Post()
-        new_post.img = data_img
-        new_post.type = data_type
-        new_post.data = data_data
+        new_post.img = '/uploads/'+file.filename
+        new_post.type = request.form.get('type')
+        new_post.data = 'data_data_data_data'
         new_post.user_id = current_user.id
         db.session.add(new_post)
         db.session.commit()
