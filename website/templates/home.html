@@ -2,24 +2,31 @@
 
 {% block content %}
 
-<h1 allign="center">Notes</h1>
+<h1 allign="center">Posts</h1>
 
-<ul class="list-group list-group-flush" id="my_notes">
+<ul class="list-group list-group-flush" id="my_posts">
 
-    {% for note in user.notes %}
-    <li class="list-group-item">{{note.data}}
-        <button class="close" type="button" onClick="deleteNote({{ note.id }})">
+
+    <li class="list-group-item">
+        <button class="close" type="button" onClick="deletePost({{ post.id }})">
             <span aria-hidden="true">&times;</span>
         </button>
     </li>
-    {% endfor %}
 
 </ul>
 
 <form method="POST">
     <div class="form-group">
-        <label for="note">New note</label>
-        <input type="note" class="form-control" id="note" name="note" placeholder="Note" />
+        <label for="img">New img</label>
+        <input type="img" class="form-control" id="img" name="img" placeholder="Img" />
+    </div>
+    <div class="form-group">
+        <label for="type">Type</label>
+        <input type="type" class="form-control" id="type" name="type" placeholder="Type" />
+    </div>
+    <div class="form-group">
+        <label for="data">Data</label>
+        <input type="data" class="form-control" id="data" name="data" placeholder="Data" />
     </div>
     <br />
     <button type="submit" class="btn btn-primary">Add</button>
