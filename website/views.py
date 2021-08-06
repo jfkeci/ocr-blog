@@ -47,12 +47,20 @@ def add():
     if request.method == 'POST':
         file = request.files['file']
         dir_path = os.path.dirname(os.path.realpath(__file__))
-        file.save(os.path.join(dir_path, 'img', file.filename))
+        img_dir = os.path.join(dir_path, 'img', file.filename)
+        file.save(img_dir)
+
+        reader = easyocr.Reader(['en'], gpu=False)
+        results = reader.readtext(img_dir)
+        text = ''
+        print(results)
+        for result in results:
+            text += result[1] + ' '
 
         new_post = Post()
-        new_post.img = os.path.join(dir_path, 'img', file.filename)
+        new_post.img = img_dir
         new_post.type = request.form.get('type')
-        new_post.data = 'data_data_data_data'
+        new_post.data = text
         new_post.user_id = current_user.id
         db.session.add(new_post)
         db.session.commit()

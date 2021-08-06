@@ -23,13 +23,16 @@
             <li class="list-group-item">
                 <div class="row">
                     <div class="col-md-4">
-                        <img style="width:100%" src="/static/img/noimage.jpeg" alt="/static/img/noimage.jpeg" class="">
+                        <img style="width:100%" src="{{ post.img }}" alt="/static/img/noimage.jpeg" class="">
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-8">
                         <a href="/posts/{{ post.id }}">
-                            <h3>{{ post.img }}</h3>
+                            <h5>{{ post.img }}</h5>
                         </a>
+                        <p>{{ post.data }}</p>
                         <small>Written on: {{ post.date }}</small>
+                        <br>
+                        <br>
                         <button class="btn btn-danger" type="button" onClick="deletePost({{ post.id }})">
                             Delete
                         </button>

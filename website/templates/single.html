@@ -1,0 +1,23 @@
+{% extends "base.html" %} {% block title %} Changed {% endblock %}
+
+{% block content %}
+
+<br>
+<br>
+
+<a class="btn btn-default" href="/">Go back</a>
+
+<br>
+<br>
+<div class="col-md-12">
+    <img style="width:100%" src="{{ post.img }}" alt="/static/img/noimage.jpeg" class="">
+    <p>{{ post.data }}</p>
+    <hr>
+    <small>Written on: {{ post.date }}</small>
+</div>
+<hr>
+
+<a href="/posts/{{ post.id }}/edit" class="btn btn-default"> Edit </a>
+
+
+{% endblock %}
