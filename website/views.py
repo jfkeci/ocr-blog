@@ -18,11 +18,11 @@ def home():
         data_img = request.form.get('img')
         data_type = request.form.get('type')
         data_data = request.form.get('data')
-        if len(data_img):
+        if len(data_img) < 2:
             flash('Data is too short', category='error')
-        if len(data_type):
+        if len(data_type) < 2:
             flash('Type is too short', category='error')
-        if len(data_data):
+        if len(data_data) < 2:
             flash('Data is too short', category='error')
         else:
             new_post = Post()
@@ -33,10 +33,11 @@ def home():
             db.session.add(new_post)
             db.session.commit()
             flash('Post added', category='success')
-    return render_template("home.html")  # , user=current_user
+    posts = Post.query.all()
+    return render_template("home.html", posts=posts, user=current_user)
 
 
-@views.route('/delete-post', methods=['POST'])
+@ views.route('/delete-post', methods=['POST'])
 def delete_post():
     post = json.loads(request.data)
     postId = post['postId']
@@ -47,3 +48,15 @@ def delete_post():
             db.session.commit()
 
     return jsonify({})
+
+
+@views.route('/profile', methods=['GET', 'POST'])
+@login_required
+def profile():
+    return render_template("home.html", posts=posts, user=current_user)
+
+
+@views.route('/add', methods=['GET', 'POST'])
+@login_required
+def add():
+    return render_template("home.html", posts=posts, user=current_user)

@@ -4,32 +4,51 @@
 
 <h1 allign="center">Posts</h1>
 
-<ul class="list-group list-group-flush" id="my_posts">
+<div class="row">
+    <form method="POST">
+        <div class="form-group">
+            <label for="img">New img</label>
+            <input type="img" class="form-control" id="img" name="img" placeholder="Img" />
+        </div>
+        <div class="form-group">
+            <label for="data">Data</label>
+            <input type="data" class="form-control" id="data" name="data" placeholder="Data" />
+        </div>
+        <select class="form-select" aria-label="Default select example" id="type" name="type">
+            <option value="EasyOCR" selected>EasyOCR</option>
+            <option value="Kraken">Kraken</option>
+        </select>
+        <br />
+        <button type="submit" class="btn btn-primary">Add</button>
+    </form>
+</div>
 
-
-    <li class="list-group-item">
-        <button class="close" type="button" onClick="deletePost({{ post.id }})">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </li>
-
-</ul>
-
-<form method="POST">
-    <div class="form-group">
-        <label for="img">New img</label>
-        <input type="img" class="form-control" id="img" name="img" placeholder="Img" />
+<div class="well">
+    {% if posts is defined %}
+    <div class="card">
+        <ul class="list-group list-group-flash">
+            {% for post in posts %}
+            <li class="list-group-item">
+                <div class="row">
+                    <div class="col-md-4">
+                        <img style="width:100%" src="/static/img/noimage.jpeg" alt="/static/img/noimage.jpeg" class="">
+                    </div>
+                    <div class="col-md-4">
+                        <a href="/posts/{{ post.id }}">
+                            <h3>{{ post.img }}</h3>
+                        </a>
+                        <small>Written on: {{ post.date }}</small>
+                    </div>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
     </div>
-    <div class="form-group">
-        <label for="type">Type</label>
-        <input type="type" class="form-control" id="type" name="type" placeholder="Type" />
-    </div>
-    <div class="form-group">
-        <label for="data">Data</label>
-        <input type="data" class="form-control" id="data" name="data" placeholder="Data" />
-    </div>
-    <br />
-    <button type="submit" class="btn btn-primary">Add</button>
-</form>
+    {% endif %}
+</div>
+
+
+
+
 
 {% endblock %}
