@@ -50,7 +50,7 @@ def add():
         file.save(os.path.join(dir_path, 'img', file.filename))
 
         new_post = Post()
-        new_post.img = '/uploads/'+file.filename
+        new_post.img = os.path.join(dir_path, 'img', file.filename)
         new_post.type = request.form.get('type')
         new_post.data = 'data_data_data_data'
         new_post.user_id = current_user.id

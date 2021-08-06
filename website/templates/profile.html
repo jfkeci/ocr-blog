@@ -30,8 +30,12 @@
                             <h3>{{ post.img }}</h3>
                         </a>
                         <small>Written on: {{ post.date }}</small>
+                        <button class="btn btn-danger" type="button" onClick="deletePost({{ post.id }})">
+                            Delete
+                        </button>
                     </div>
                 </div>
+
             </li>
             {% endfor %}
         </ul>
