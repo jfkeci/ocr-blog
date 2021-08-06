@@ -1,0 +1,20 @@
+{% extends "base.html" %} {% block title %} Changed {% endblock %}
+
+{% block content %}
+
+
+<form method="POST">
+    <div class="form-group">
+        <label for="img">New post</label>
+        <input type="img" class="form-control" id="img" name="img" placeholder="Img" />
+    </div>
+    <div class="form-group">
+        <select class="form-select" aria-label="Default select example" id="type" name="type">
+            <option value="EasyOCR">EasyOCR</option>
+            <option value="Kraken">Kraken</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Add</button>
+</form>
+
+{% endblock %}

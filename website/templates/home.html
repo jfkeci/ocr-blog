@@ -4,25 +4,6 @@
 
 <h1 allign="center">Posts</h1>
 
-<div class="row">
-    <form method="POST">
-        <div class="form-group">
-            <label for="img">New img</label>
-            <input type="img" class="form-control" id="img" name="img" placeholder="Img" />
-        </div>
-        <div class="form-group">
-            <label for="data">Data</label>
-            <input type="data" class="form-control" id="data" name="data" placeholder="Data" />
-        </div>
-        <select class="form-select" aria-label="Default select example" id="type" name="type">
-            <option value="EasyOCR" selected>EasyOCR</option>
-            <option value="Kraken">Kraken</option>
-        </select>
-        <br />
-        <button type="submit" class="btn btn-primary">Add</button>
-    </form>
-</div>
-
 <div class="well">
     {% if posts is defined %}
     <div class="card">
@@ -46,9 +27,5 @@
     </div>
     {% endif %}
 </div>
-
-
-
-
 
 {% endblock %}

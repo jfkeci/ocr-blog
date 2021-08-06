@@ -1,0 +1,39 @@
+{% extends "base.html" %} {% block title %} Changed {% endblock %}
+
+{% block content %}
+
+<hr>
+
+{% if user is defined %}
+<h3>User: {{user.username}}</h3>
+{% endif %}
+
+<hr>
+
+<h1 allign="center">Posts</h1>
+<br>
+<div class="well">
+    {% if user is defined %}
+    <div class="card">
+        <ul class="list-group list-group-flash">
+            {% for post in user.posts %}
+            <li class="list-group-item">
+                <div class="row">
+                    <div class="col-md-4">
+                        <img style="width:100%" src="/static/img/noimage.jpeg" alt="/static/img/noimage.jpeg" class="">
+                    </div>
+                    <div class="col-md-4">
+                        <a href="/posts/{{ post.id }}">
+                            <h3>{{ post.img }}</h3>
+                        </a>
+                        <small>Written on: {{ post.date }}</small>
+                    </div>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}

@@ -11,28 +11,9 @@ import json
 views = Blueprint('views', __name__)
 
 
-@views.route('/', methods=['GET', 'POST'])
+@views.route('/', methods=['GET'])
 @login_required
 def home():
-    if request.method == 'POST':
-        data_img = request.form.get('img')
-        data_type = request.form.get('type')
-        data_data = request.form.get('data')
-        if len(data_img) < 2:
-            flash('Data is too short', category='error')
-        if len(data_type) < 2:
-            flash('Type is too short', category='error')
-        if len(data_data) < 2:
-            flash('Data is too short', category='error')
-        else:
-            new_post = Post()
-            new_post.img = data_img
-            new_post.type = data_type
-            new_post.data = data_data
-            new_post.user_id = current_user.id
-            db.session.add(new_post)
-            db.session.commit()
-            flash('Post added', category='success')
     posts = Post.query.all()
     return render_template("home.html", posts=posts, user=current_user)
 
@@ -53,10 +34,23 @@ def delete_post():
 @views.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
-    return render_template("home.html", posts=posts, user=current_user)
+    return render_template("profile.html", user=current_user)
 
 
 @views.route('/add', methods=['GET', 'POST'])
 @login_required
 def add():
-    return render_template("home.html", posts=posts, user=current_user)
+    if request.method == 'POST':
+        data_img = request.form.get('img')
+        data_type = request.form.get('type')
+        data_data = 'data'
+
+        new_post = Post()
+        new_post.img = data_img
+        new_post.type = data_type
+        new_post.data = data_data
+        new_post.user_id = current_user.id
+        db.session.add(new_post)
+        db.session.commit()
+        flash('Post added', category='success')
+    return render_template("add.html", user=current_user)
