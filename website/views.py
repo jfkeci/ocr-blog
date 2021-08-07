@@ -47,7 +47,7 @@ def profile():
 
 @views.route('/add', methods=['GET', 'POST'])
 @login_required
-def add():
+def add(): 
     if request.method == 'POST':
         file = request.files['file']
         ocr_type = request.form.get('type')
