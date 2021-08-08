@@ -1,4 +1,4 @@
-{% extends "base.html" %} {% block title %} Changed {% endblock %}
+{% extends "base.html" %} {% block title %} Add {% endblock %}
 
 {% block content %}
 
@@ -14,9 +14,9 @@
     </div>
     <div class="form-group">
         <select class="form-select" aria-label="Default select example" id="type" name="type">
-            <option value="Kraken">Kraken</option>
-            <option value="EasyOCR">EasyOCR</option>
-            <option value="Tesseract">Tesseract</option>
+            {% for ocr in ocrs %}
+            <option value="{{ocr}}">{{ocr}}</option>
+            {% endfor %}
         </select>
     </div>
     <button type="submit" class="btn btn-primary">Add</button>

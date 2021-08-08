@@ -1,4 +1,4 @@
-{% extends "base.html" %} {% block title %} Changed {% endblock %}
+{% extends "base.html" %} {% block title %} Home {% endblock %}
 
 {% block content %}
 
@@ -16,9 +16,9 @@
                     </div>
                     <div class="col-md-4">
                         <a href="/post/{{ post.id }}">
-                            <h3>{{ post.img }}</h3>
+                            <h3>{{ post.title }}</h3>
                         </a>
-                        <h5>{{ post.title }}</h5>
+                        <small><b>Elapsed time: </b> {{ post.elapsed_time }}</small>
                         <small>Written on: {{ post.date }}</small>
                     </div>
                 </div>

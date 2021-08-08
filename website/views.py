@@ -13,8 +13,10 @@ from flask_login import login_required, current_user
 from kraken import rpred, binarization, pageseg
 from kraken.lib import models, vgsl
 from PIL import Image
+import time
 """ from werkzeug.utils import secure_filename """
 
+ocrs = ['Kraken', 'EasyOCR', 'Tesseract']
 
 views = Blueprint('views', __name__)
 
@@ -43,6 +45,7 @@ def delete_post():
 @login_required
 def add():
     if request.method == 'POST':
+        start = time.time()
         file = request.files['file']
         ocr_type = request.form.get('type')
         title = request.form.get('title')
@@ -61,14 +64,13 @@ def add():
         elif ocr_type == 'Kraken':
             post_image = Image.open(img_dir)
             bw_im = binarization.nlbin(post_image)
-            print(bw_im)
             seg = pageseg.segment(bw_im)
-            print(seg)
         elif ocr_type == 'EasyOCR':
             reader = easyocr.Reader(['en'], gpu=False)
             results = reader.readtext(img_dir)
             for result in results:
                 text += result[1] + ' '
+
         # saving the post
         new_post = Post()
         new_post.img = img_dir
@@ -76,50 +78,57 @@ def add():
         new_post.title = title
         new_post.data = text
         new_post.user_id = current_user.id
+
+        end = time.time()
+        elapsed_time = end-start
+
+        new_post.elapsed_time = elapsed_time
         db.session.add(new_post)
         db.session.commit()
         return render_template("single.html", user=current_user, post=new_post)
-    return render_template("add.html", user=current_user)
+    return render_template("add.html", user=current_user, ocrs=ocrs)
 
 
 @views.route('/ocr', methods=['GET', 'POST'])
 def ocr():
     text = ''
     if request.method == 'POST':
-        if request.files['file']:
-            file = request.files['file']
-            ocr_type = request.form.get('type')
+        start = time.time()
+        file = request.files['file']
+        ocr_type = request.form.get('type')
 
-            # setting img dir
-            dir_path = os.path.dirname(os.path.realpath(__file__))
-            img_dir = os.path.join(dir_path, 'img', file.filename)
-            file.save(img_dir)
+        # setting img dir
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+        img_dir = os.path.join(dir_path, 'img', file.filename)
+        file.save(img_dir)
 
-            # choosing ocr
-            if ocr_type == 'Tesseract':
-                custom_config = r'--oem 3 --psm 6'
-                text = pytesseract.image_to_string(file, config=custom_config)
-            elif ocr_type == 'Kraken':
-                post_image = Image.open(file)
-                bw_im = binarization.nlbin(post_image)
-                print(bw_im)
-                seg = pageseg.segment(bw_im)
-                print(seg)
-            elif ocr_type == 'EasyOCR':
-                reader = easyocr.Reader(['en'], gpu=False)
-                results = reader.readtext(file)
-                for result in results:
-                    text += result[1] + ' '
+        text = ''
 
-    text = '[{\"text\": \"'+text+'\"}]'
-    return render_template("ocr.html", user=current_user, text=text)
+        # choosing ocr
+        if ocr_type == 'Tesseract':
+            custom_config = r'--oem 3 --psm 6'
+            text = pytesseract.image_to_string(img_dir, config=custom_config)
+        elif ocr_type == 'Kraken':
+            post_image = Image.open(img_dir)
+            bw_im = binarization.nlbin(post_image)
+            seg = pageseg.segment(bw_im)
+        elif ocr_type == 'EasyOCR':
+            reader = easyocr.Reader(['en'], gpu=False)
+            results = reader.readtext(img_dir)
+            for result in results:
+                text += result[1] + ' '
+
+    end = time.time()
+    elapsed_time = end-start
+    text = '[{\"text\": \"'+text+'\"}, "ocr_type": "' + \
+        ocr_type+'", "elapsed_time": "'+str(elapsed_time)+'"]'
+    return render_template("ocr.html", user=current_user, text=text, ocrs=ocrs)
 
 
 @views.route('/edit/<id>', methods=['GET', 'POST'])
 def edit(id):
-    ocrs = ['Kraken', 'EasyOCR', 'Tesseract']
     if request.method == 'POST':
-        post = Post.query.get(request.form.get('id'))
+        post = Post.query.get(id)
         post.title = request.form.get('title')
 
         db.session.add(post)

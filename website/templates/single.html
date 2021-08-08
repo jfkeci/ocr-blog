@@ -1,4 +1,4 @@
-{% extends "base.html" %} {% block title %} Changed {% endblock %}
+{% extends "base.html" %} {% block title %} Post {% endblock %}
 
 {% block content %}
 
@@ -19,6 +19,8 @@
         <b>Text:</b> {{ post.data }}
     </p>
     <hr>
+    <small><b>Elapsed time: </b> {{ post.elapsed_time }}</small>
+    <br>
     <small>Written on: {{ post.date }}</small>
 </div>
 <hr>
