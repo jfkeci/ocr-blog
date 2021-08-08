@@ -13,6 +13,8 @@
 <br>
 <div class="col-md-12">
     <img style="width:100%" src="{{ post.img }}" alt="/static/img/noimage.jpeg">
+    <br>
+    <h5>{{ post.title }}</h5>
     <p>
         <b>Text:</b> {{ post.data }}
     </p>
@@ -21,7 +23,10 @@
 </div>
 <hr>
 
-<a href="/posts/{{ post.id }}/edit" class="btn btn-default"> Edit </a>
-
+<a href="/edit/{{ post.id }}" class="btn btn-default"> Edit </a>
+<br>
+<button class="btn btn-danger" type="button" onClick="deletePost({{ post.id }})">
+    Delete
+</button>
 
 {% endblock %}

@@ -39,12 +39,6 @@ def delete_post():
     return jsonify({})
 
 
-@views.route('/profile', methods=['GET', 'POST'])
-@login_required
-def profile():
-    return render_template("profile.html", user=current_user, num_posts=len(current_user.posts))
-
-
 @views.route('/add', methods=['GET', 'POST'])
 @login_required
 def add():
@@ -84,8 +78,8 @@ def add():
         new_post.user_id = current_user.id
         db.session.add(new_post)
         db.session.commit()
-        flash('Post added', category='success')
-    return render_template("single.html", user=current_user, post=new_post)
+        return render_template("single.html", user=current_user, post=new_post)
+    return render_template("add.html", user=current_user)
 
 
 @views.route('/ocr', methods=['GET', 'POST'])
@@ -121,7 +115,28 @@ def ocr():
     return render_template("ocr.html", user=current_user, text=text)
 
 
+@views.route('/edit/<id>', methods=['GET', 'POST'])
+def edit(id):
+    ocrs = ['Kraken', 'EasyOCR', 'Tesseract']
+    if request.method == 'POST':
+        post = Post.query.get(request.form.get('id'))
+        post.title = request.form.get('title')
+
+        db.session.add(post)
+        db.session.commit()
+        return render_template('single.html', user=current_user, post=post)
+    else:
+        post = Post.query.get(id)
+        return render_template('edit.html', user=current_user, post=post, ocrs=ocrs)
+
+
 @views.route('/post/<id>', methods=['GET'])
 def single(id):
     post = Post.query.get(id)
     return render_template('single.html', user=current_user, post=post)
+
+
+@views.route('/profile', methods=['GET', 'POST'])
+@login_required
+def profile():
+    return render_template("profile.html", user=current_user, num_posts=len(current_user.posts))

@@ -1,0 +1,35 @@
+{% extends "base.html" %} {% block title %} Changed {% endblock %}
+
+{% block content %}
+
+
+<form method="POST" enctype='multipart/form-data'>
+    <div class="form-group">
+        <label for="file">New post</label>
+        <p id="file" name="file">{{post->img}}</p>
+    </div>
+    <div class="form-group">
+        <label for="title">{{post.title}}</label>
+        <input type="text" class="form-control" id="title" name="title" />
+    </div>
+    <div class="form-group">
+        <input type="hidden" class="form-control" id="id" name="id" value="{{post.id}}" />
+    </div>
+    <div class="form-group">
+        <select class="form-select" aria-label="Default select example" id="type" name="type">
+            {% for ocr in ocrs %}
+            {% if ocr == post.ocr %}
+            <option value="{{ocr}}">{{ocr}}</option>
+            {% else %}
+            <option selected value="{{ocr}}">{{ocr}}</option>
+            {% endif %}
+            {% endfor %}
+        </select>
+    </div>
+
+    <p>{{post.date}}</p>
+
+    <button type="submit" class="btn btn-primary">Update</button>
+</form>
+
+{% endblock %}
