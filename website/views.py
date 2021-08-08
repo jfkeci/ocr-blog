@@ -18,6 +18,12 @@ import time
 
 ocrs = ['Kraken', 'EasyOCR', 'Tesseract']
 
+
+def remove_image(img_dir):
+    if os.path.isfile(img_dir):
+        os.remove(img_dir)
+
+
 views = Blueprint('views', __name__)
 
 
@@ -37,6 +43,8 @@ def delete_post():
         if post.user_id == current_user.id:
             db.session.delete(post)
             db.session.commit()
+            if os.path.isfile(post.img):
+                os.remove(post.img)
 
     return jsonify({})
 
@@ -52,7 +60,7 @@ def add():
 
         # setting img dir
         dir_path = os.path.dirname(os.path.realpath(__file__))
-        img_dir = os.path.join(dir_path, 'img', file.filename)
+        img_dir = os.path.join(dir_path, 'img', str(time.time())+file.filename)
         file.save(img_dir)
 
         text = ''
@@ -82,7 +90,7 @@ def add():
         end = time.time()
         elapsed_time = end-start
 
-        new_post.elapsed_time = elapsed_time
+        new_post.elapsed_time = str(elapsed_time)
         db.session.add(new_post)
         db.session.commit()
         return render_template("single.html", user=current_user, post=new_post)
@@ -92,6 +100,10 @@ def add():
 @views.route('/ocr', methods=['GET', 'POST'])
 def ocr():
     text = ''
+    ocr_type = ''
+    elapsed_time = ''
+    start = 0.0
+
     if request.method == 'POST':
         start = time.time()
         file = request.files['file']
@@ -99,7 +111,7 @@ def ocr():
 
         # setting img dir
         dir_path = os.path.dirname(os.path.realpath(__file__))
-        img_dir = os.path.join(dir_path, 'img', file.filename)
+        img_dir = os.path.join(dir_path, 'img', str(time.time())+file.filename)
         file.save(img_dir)
 
         text = ''
@@ -108,20 +120,24 @@ def ocr():
         if ocr_type == 'Tesseract':
             custom_config = r'--oem 3 --psm 6'
             text = pytesseract.image_to_string(img_dir, config=custom_config)
+            remove_image(img_dir)
         elif ocr_type == 'Kraken':
             post_image = Image.open(img_dir)
             bw_im = binarization.nlbin(post_image)
             seg = pageseg.segment(bw_im)
+
+            remove_image(img_dir)
         elif ocr_type == 'EasyOCR':
             reader = easyocr.Reader(['en'], gpu=False)
             results = reader.readtext(img_dir)
             for result in results:
                 text += result[1] + ' '
+            remove_image(img_dir)
+        end = time.time()
+        elapsed_time = str(end-start)
 
-    end = time.time()
-    elapsed_time = end-start
     text = '[{\"text\": \"'+text+'\"}, "ocr_type": "' + \
-        ocr_type+'", "elapsed_time": "'+str(elapsed_time)+'"]'
+        ocr_type+'", "elapsed_time": "'+elapsed_time+'"]'
     return render_template("ocr.html", user=current_user, text=text, ocrs=ocrs)
 
 
