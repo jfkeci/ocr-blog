@@ -5,13 +5,17 @@
 <br>
 <br>
 
-<a class="btn btn-default" href="/">Go back</a>
+<a class="btn btn-default" href="/">
+    <b>Go back</b>
+</a>
 
 <br>
 <br>
 <div class="col-md-12">
-    <img style="width:100%" src="{{ post.img }}" alt="/static/img/noimage.jpeg" class="">
-    <p>{{ post.data }}</p>
+    <img style="width:100%" src="{{ post.img }}" alt="/static/img/noimage.jpeg">
+    <p>
+        <b>Text:</b> {{ post.data }}
+    </p>
     <hr>
     <small>Written on: {{ post.date }}</small>
 </div>

@@ -6,6 +6,7 @@ from sqlalchemy.sql import func
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     img = db.Column(db.String(155))
+    title = db.Column(db.String(155))
     data = db.Column(db.String(1024))
     type = db.Column(db.String(15))
     date = db.Column(db.DateTime(timezone=True), default=func.now())

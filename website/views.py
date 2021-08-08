@@ -47,10 +47,11 @@ def profile():
 
 @views.route('/add', methods=['GET', 'POST'])
 @login_required
-def add(): 
+def add():
     if request.method == 'POST':
         file = request.files['file']
         ocr_type = request.form.get('type')
+        title = request.form.get('title')
 
         # setting img dir
         dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -75,12 +76,52 @@ def add():
             for result in results:
                 text += result[1] + ' '
         # saving the post
-        """ new_post = Post()
+        new_post = Post()
         new_post.img = img_dir
         new_post.type = ocr_type
+        new_post.title = title
         new_post.data = text
         new_post.user_id = current_user.id
         db.session.add(new_post)
         db.session.commit()
-        flash('Post added', category='success') """
-    return render_template("add.html", user=current_user)
+        flash('Post added', category='success')
+    return render_template("single.html", user=current_user, post=new_post)
+
+
+@views.route('/ocr', methods=['GET', 'POST'])
+def ocr():
+    text = ''
+    if request.method == 'POST':
+        if request.files['file']:
+            file = request.files['file']
+            ocr_type = request.form.get('type')
+
+            # setting img dir
+            dir_path = os.path.dirname(os.path.realpath(__file__))
+            img_dir = os.path.join(dir_path, 'img', file.filename)
+            file.save(img_dir)
+
+            # choosing ocr
+            if ocr_type == 'Tesseract':
+                custom_config = r'--oem 3 --psm 6'
+                text = pytesseract.image_to_string(file, config=custom_config)
+            elif ocr_type == 'Kraken':
+                post_image = Image.open(file)
+                bw_im = binarization.nlbin(post_image)
+                print(bw_im)
+                seg = pageseg.segment(bw_im)
+                print(seg)
+            elif ocr_type == 'EasyOCR':
+                reader = easyocr.Reader(['en'], gpu=False)
+                results = reader.readtext(file)
+                for result in results:
+                    text += result[1] + ' '
+
+    text = '[{\"text\": \"'+text+'\"}]'
+    return render_template("ocr.html", user=current_user, text=text)
+
+
+@views.route('/post/<id>', methods=['GET'])
+def single(id):
+    post = Post.query.get(id)
+    return render_template('single.html', user=current_user, post=post)

@@ -5,12 +5,8 @@
 
 <form method="POST" enctype='multipart/form-data'>
     <div class="form-group">
-        <label for="file">New post</label>
+        <label for="file">OCR</label>
         <input type="file" class="form-control" id="file" name="file" />
-    </div>
-    <div class="form-group">
-        <label for="title">Title</label>
-        <input type="text" class="form-control" id="title" name="title" />
     </div>
     <div class="form-group">
         <select class="form-select" aria-label="Default select example" id="type" name="type">
@@ -19,7 +15,14 @@
             <option value="Tesseract">Tesseract</option>
         </select>
     </div>
-    <button type="submit" class="btn btn-primary">Add</button>
+    <button type="submit" class="btn btn-primary">OCR</button>
 </form>
+
+
+{% if text is defined %}
+<hr>
+<p>Text: {{text}}</p>
+<hr>
+{% endif %}
 
 {% endblock %}
