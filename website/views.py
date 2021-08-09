@@ -61,6 +61,8 @@ def add():
         # setting img dir
         dir_path = os.path.dirname(os.path.realpath(__file__))
         img_dir = os.path.join(dir_path, 'img', str(time.time())+file.filename)
+        rec_model_path = os.path.join(
+            dir_path, 'en_best.mlmodel')  # model directory
         file.save(img_dir)
 
         text = ''
@@ -73,6 +75,11 @@ def add():
             post_image = Image.open(img_dir)
             bw_im = binarization.nlbin(post_image)
             seg = pageseg.segment(bw_im)
+
+            model2 = models.load_any(rec_model_path)
+            pred_it = rpred.rpred(model2, post_image, seg)
+            for record in pred_it:
+                text += str(record)
         elif ocr_type == 'EasyOCR':
             reader = easyocr.Reader(['en'], gpu=False)
             results = reader.readtext(img_dir)
@@ -112,6 +119,8 @@ def ocr():
         # setting img dir
         dir_path = os.path.dirname(os.path.realpath(__file__))
         img_dir = os.path.join(dir_path, 'img', str(time.time())+file.filename)
+        rec_model_path = os.path.join(
+            dir_path, 'en_best.mlmodel')  # model directory
         file.save(img_dir)
 
         text = ''
@@ -126,6 +135,10 @@ def ocr():
             bw_im = binarization.nlbin(post_image)
             seg = pageseg.segment(bw_im)
 
+            model2 = models.load_any(rec_model_path)
+            pred_it = rpred.rpred(model2, post_image, seg)
+            for record in pred_it:
+                text += str(record)
             remove_image(img_dir)
         elif ocr_type == 'EasyOCR':
             reader = easyocr.Reader(['en'], gpu=False)
