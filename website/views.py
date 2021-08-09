@@ -31,6 +31,10 @@ views = Blueprint('views', __name__)
 @login_required
 def home():
     posts = Post.query.all()
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    for post in posts:
+        post.img = post.img.replace(dir_path, '')
+        post.img = post.img.replace('\\', '/')
     return render_template("home.html", posts=posts, user=current_user)
 
 
@@ -60,7 +64,8 @@ def add():
 
         # setting img dir
         dir_path = os.path.dirname(os.path.realpath(__file__))
-        img_dir = os.path.join(dir_path, 'img', str(time.time())+file.filename)
+        img_dir = os.path.join(dir_path, 'static\img',
+                               str(time.time())+file.filename)
         rec_model_path = os.path.join(
             dir_path, 'en_best.mlmodel')  # model directory
         file.save(img_dir)
@@ -118,7 +123,8 @@ def ocr():
 
         # setting img dir
         dir_path = os.path.dirname(os.path.realpath(__file__))
-        img_dir = os.path.join(dir_path, 'img', str(time.time())+file.filename)
+        img_dir = os.path.join(dir_path, 'static/img',
+                               str(time.time())+file.filename)
         rec_model_path = os.path.join(
             dir_path, 'en_best.mlmodel')  # model directory
         file.save(img_dir)
@@ -148,9 +154,9 @@ def ocr():
             remove_image(img_dir)
         end = time.time()
         elapsed_time = str(end-start)
-
-    text = '[{\"text\": \"'+text+'\"}, "ocr_type": "' + \
-        ocr_type+'", "elapsed_time": "'+elapsed_time+'"]'
+        text = '["ocr": {\"text\": \"'+text+'\"}, "ocr_type": "' + \
+            ocr_type+'", "elapsed_time": "'+elapsed_time+'"]'
+        return text
     return render_template("ocr.html", user=current_user, text=text, ocrs=ocrs)
 
 
@@ -170,11 +176,20 @@ def edit(id):
 
 @views.route('/post/<id>', methods=['GET'])
 def single(id):
+    dir_path = os.path.dirname(os.path.realpath(__file__))
     post = Post.query.get(id)
+    post.img = post.img.replace(dir_path, '')
+    post.img = post.img.replace('\\', '/')
     return render_template('single.html', user=current_user, post=post)
 
 
 @views.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
-    return render_template("profile.html", user=current_user, num_posts=len(current_user.posts))
+    dir_path = os.path.dirname(os.path.realpath(__file__)) + '\\'
+
+    posts = current_user.posts
+    for post in posts:
+        post.img = post.img.replace(dir_path, '')
+        post.img = post.img.replace('\\', '/')
+    return render_template("profile.html", user=current_user, num_posts=len(current_user.posts), posts=posts)

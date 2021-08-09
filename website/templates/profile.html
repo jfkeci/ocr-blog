@@ -16,14 +16,14 @@
 <h1 allign="center">Posts</h1>
 <br>
 <div class="well">
-    {% if user is defined %}
+    {% if posts is defined %}
     <div class="card">
         <ul class="list-group list-group-flash">
-            {% for post in user.posts %}
+            {% for post in posts %}
             <li class="list-group-item">
                 <div class="row">
                     <div class="col-md-4">
-                        <img style="width:100%" src="{{ post.img }}" alt="/static/img/noimage.jpeg" class="">
+                        <img style="width:100%" src="{{post.img}}" alt="/static/img/noimage.jpeg" class="">
                     </div>
                     <div class="col-md-8">
                         <a href="/post/{{ post.id }}">
